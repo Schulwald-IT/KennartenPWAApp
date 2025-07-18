@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pflanzen-Erkenner</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+  <meta name="theme-color" content="#4CAF50" />
+</head>
+<body>
+  <h1>Pflanzen-Erkenner</h1>
+  
+  <video id="webcam" autoplay playsinline muted width="224" height="224"></video>
+  <button id="startBtn">Kamera starten</button>
+  <button id="predictBtn">Erkennen</button>
+  
+  <p id="result">Warte auf Modell und Kamera…</p>
+
+  <!-- Installationsbutton, standardmäßig versteckt -->
+  <button id="installBtn" style="display: none;">App installieren</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <script src="script.js"></script>
+
+  <script>
+    let deferredPrompt;
+
+    // Installationsbutton-Logik
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Event abfangen
+      e.preventDefault();
+      deferredPrompt = e;
+
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+      if (!isStandalone) {
+        const installBtn = document.getElementById('installBtn');
+        installBtn.style.display = 'block';
+
+        installBtn.addEventListener('click', async () => {
+          installBtn.style.display = 'none';
+          deferredPrompt.prompt();
+
+          const { outcome } = await deferredPrompt.userChoice;
+          if (outcome === 'accepted') {
+            console.log('App-Installation akzeptiert');
+          } else {
+            console.log('App-Installation abgelehnt');
+          }
+          deferredPrompt = null;
+        });
+      }
+    });
+
+    document.getElementById('startBtn').onclick = async () => {
+    await setupWebcam();
+    await loadModel();
+    document.getElementById('predictBtn').onclick = predict;
+    };
+
+
+    // Optional: Nach Installation Button ausblenden
+    window.addEventListener('appinstalled', () => {
+      console.log('PWA installiert');
+      const installBtn = document.getElementById('installBtn');
+      installBtn.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
