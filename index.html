@@ -59,10 +59,12 @@
       }
     });
 
-    //onklickn events von start button und predict button werden gesetzt
+    //onklick events von start button wird gesetzt
     document.getElementById('startBtn').onclick = async () => {
+    //webcam wird geöffnet und models werden gelesen zur bestimmung der kennarten
     await setupWebcam();
     await loadModel();
+    //predictbutton onklick event wird gesetzt
     document.getElementById('predictBtn').onclick = predict;
     };
 
