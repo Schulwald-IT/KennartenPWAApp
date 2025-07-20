@@ -14,7 +14,6 @@
   <video id="webcam" autoplay playsinline muted width="224" height="224"></video>
   <button id="startBtn">Kamera starten</button>
   <button id="predictBtn">Erkennen</button>
-  
   <p id="result">Warte auf Modell und Kamera…</p>
 
   <!-- Installationsbutton, standardmäßig versteckt -->
@@ -26,33 +25,39 @@
   <script>
     let deferredPrompt;
 
-    // Installationsbutton-Logik
+    // Installationsbutton-Logik: vor dem installieren wird folgender code ausgeführt
     window.addEventListener('beforeinstallprompt', (e) => {
-      // Event abfangen
+      // Event wird abgefangen, normale bearbeitung gestoppt, um auf den user prompt zuzugreifen
       e.preventDefault();
       deferredPrompt = e;
-
+      //isStandalone bedeutet, dass die Web-App nicht in einem Browser-Tab läuft, sondern wie eine native App 
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
       if (!isStandalone) {
+        //holt sich den install button um den button sichtbar zu machen
         const installBtn = document.getElementById('installBtn');
         installBtn.style.display = 'block';
-
+        //fügt einen eventlistener für das onklick event hinzu
         installBtn.addEventListener('click', async () => {
-          installBtn.style.display = 'none';
-          deferredPrompt.prompt();
-
-          const { outcome } = await deferredPrompt.userChoice;
-          if (outcome === 'accepted') {
+        //onklick witd der button unsichtbar gemacht
+        installBtn.style.display = 'none';
+        //zeigt dem Benutzer das Installations-Dialogfenster für die Progressive Web App an
+        deferredPrompt.prompt();
+        //speichert die Auswahl des Nutzers (accepted) 
+        const { outcome } = await deferredPrompt.userChoice;
+        //je nach der Auswahl des Nutzers gibt es eine Message an den Nutzer
+        if (outcome === 'accepted') {
             console.log('App-Installation akzeptiert');
           } else {
             console.log('App-Installation abgelehnt');
           }
-          deferredPrompt = null;
+        //der prompt muss wieder zurückgesetzt werden
+        deferredPrompt = null;
         });
       }
     });
 
+    //onklickn events von start button und predict button werden gesetzt
     document.getElementById('startBtn').onclick = async () => {
     await setupWebcam();
     await loadModel();
