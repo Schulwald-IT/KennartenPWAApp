@@ -69,11 +69,11 @@ async function predict() {
   //bestimmt die wahrscheinlichkeit mit welcher die kennart erkannt wurde
   const classConfidence = (classification[classIndex] * 100).toFixed(2);
 
-  if (classLabel === 'Kennart' && classConfidence > 50) {
+    //if (classLabel === 'Kennart' && classConfidence > 50) {
     //wenn sicher ist, daß es eine kennart ist mit über 50 % wahrscheinlichkeit dann bestimme die genaue kennart
     const speciesPrediction = await model_speciesClassifier.predict(inputTensor).data();
     //liste der zu bestimmenden kennarten
-    const speciesLabels = ['Ehrenpreis', 'Hahnenfuß', 'Labkraut', 'Margerite', 'Beifuß', 'Storchschnabel', 'Mädesüß'];
+    const speciesLabels = ['Labkraut', 'Ehrenpreis', 'Augentrost', 'Segge', 'Hahnfuß', 'Hainsimme', 'Butterblume', 'Strandflieder', 'Rotklee', 'Schafgarbe', 'Hornklee', 'Wiesenmargerite', 'Skabiosenflockenblume', 'Platterbse', 'Möhre', 'Mädesüß', 'Flockenblume', 'Birnelle', 'Ranuculus Orthorhynchus', 'Haarstrang', 'Wiesen Witwenblume'];
      //holt sich den index des höchsten bestimmten werts
     const speciesIndex = speciesPrediction.indexOf(Math.max(...speciesPrediction));
     //holt sich das label was mit höchster wahrscheinlichkeit bestimmt wurde
@@ -83,7 +83,7 @@ async function predict() {
     //gibt in einem paragraph objekt die kennart und die bestimmungsgenauigkeit in % an
     document.getElementById('result').innerText =
       `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%)`;
-  } else {
+  if (classLabel=="NICHT-KENNARTEN") {
     document.getElementById('result').innerText =
       `Keine Kennart erkannt (${classConfidence}%)`;
   }
