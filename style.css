@@ -24,6 +24,7 @@ body {
   
   button:hover {
     background-color: #45a049;
+    box-shadow: #000;
   }
   
   #result {
