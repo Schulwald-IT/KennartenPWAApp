@@ -84,8 +84,8 @@ async function predict() {
     document.getElementById('result').innerText =
       `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%) Kennart/Nicht Kennart : (${classConfidence}) (${classLabel})`;
   if (classLabel=="NICHT-KENNARTEN") {
-    document.getElementById('result').innerText =
-      `Keine Kennart erkannt (${classConfidence}%)`;
+  document.getElementById('result').innerText =
+      `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%) Kennart/Nicht Kennart : (${classConfidence}) (${classLabel})`;
   }
 }
 
