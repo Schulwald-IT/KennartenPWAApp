@@ -62,7 +62,7 @@ async function predict() {
   //gibt einen array von wahrscheinlichkeiten (kennart oder nicht) zurück
   const classification = await model_kennartClassifier.predict(inputTensor).data();
   //ergebnisarray
-  const classificationLabels = ['Kennart', 'Keine Kennart'];
+  const classificationLabels = ['KENNARTEN', 'NICHT-KENNARTEN'];
   //holt sich den index des höchsten bestimmten werts
   const classIndex = classification.indexOf(Math.max(...classification));
   const classLabel = classificationLabels[classIndex];
