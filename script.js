@@ -82,7 +82,7 @@ async function predict() {
     const speciesConfidence = (speciesPrediction[speciesIndex] * 100).toFixed(2);
     //gibt in einem paragraph objekt die kennart und die bestimmungsgenauigkeit in % an
     document.getElementById('result').innerText =
-      `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%)`;
+      `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%) Kennart/Nicht Kennart : (${classConfidence}) (${classLabel})`;
   if (classLabel=="NICHT-KENNARTEN") {
     document.getElementById('result').innerText =
       `Keine Kennart erkannt (${classConfidence}%)`;
