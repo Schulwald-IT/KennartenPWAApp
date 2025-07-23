@@ -88,9 +88,9 @@ async function predict() {
     //gibt in einem paragraph objekt die kennart und die bestimmungsgenauigkeit in % an
     document.getElementById('result').innerText =
       `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%) Kennart/Nicht Kennart : (${classConfidence}) (${classLabel})`;
-  ergebnisse = ergebnisse + 1    
+  ergebnisse = parseInt(ergebnisse) + 1;    
   localStorage.setItem('anzahl', ergebnisse);
-  document.getElementById("anzahlView").innerText = "GespeicherteErgebnisse" + ergebnisse;
+  document.getElementById("anzahlView").innerText = "Gespeicherte Ergebnisse:" + ergebnisse;
   if (classLabel=="NICHT-KENNARTEN") {
   document.getElementById('result').innerText =
       `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%) Kennart/Nicht Kennart : (${classConfidence}) (${classLabel})`;

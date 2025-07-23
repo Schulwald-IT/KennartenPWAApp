@@ -19,7 +19,7 @@
   <p id="result">Warte auf Modell und Kamera…</p>
   <!-- Anzahl geschpeicherter Ergebnisse anzeigen-->
   <p id="anzahlView">gespeicherte Ergebnisse</p>
-  <button onclick="localStorage.removeItem('anzahl')">alle gespeicherten Ergebnis zurücksetzen</button>
+  <button onclick="clearStorage()">alle gespeicherten Ergebnis zurücksetzen</button>
   <!-- Installationsbutton, standardmäßig versteckt -->
   <button id="installBtn" style="display: none;">App installieren</button>
 
@@ -27,6 +27,12 @@
   <script src="script.js"></script>
 
   <script>
+function clearStorage(){
+  localStorage.removeItem('anzahl');
+  localStorage.setItem('anzahl', ergebnisse);
+  document.getElementById("anzahlView").innerText = "Gespeicherte Ergebnisse:" + ergebnisse;
+}
+
     let deferredPrompt;
 
     // Installationsbutton-Logik: vor dem installieren wird folgender code ausgeführt
