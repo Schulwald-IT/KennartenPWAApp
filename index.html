@@ -21,6 +21,17 @@
   <img id="resultImage"    src=""    alt="Pflanzenbild" >
   </div>
 
+  <!-- paragraph zum darstellen des species prediction arrays -->
+  <p id="speciesPrediction"></p>
+
+  <label for="thresholdSlider">Schwellwert: <span id='thresholdValue'>50</span>%</span></label>
+  <input type="range" id="thresholdSlider" min="0" max="100" value="50" step="1"/>
+
+
+  <!-- Anzahl geschpeicherter Ergebnisse anzeigen-->
+  <p id="anzahlView">gespeicherte Ergebnisse</p>
+  <button onclick="clearStorage()">alle gespeicherten Ergebnis zurücksetzen</button>
+
   <!-- Installationsbutton, standardmäßig versteckt -->
   <button id="installBtn" style="display: none;">App installieren</button>
 
@@ -28,6 +39,12 @@
   <script src="script.js"></script>
 
   <script>
+function clearStorage(){
+  localStorage.removeItem('anzahl');
+  localStorage.setItem('anzahl', 0);
+  document.getElementById("anzahlView").innerText = "Gespeicherte Ergebnisse:" + 0;
+}
+
     let deferredPrompt;
 
     // Installationsbutton-Logik: vor dem installieren wird folgender code ausgeführt
