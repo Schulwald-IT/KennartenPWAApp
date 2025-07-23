@@ -29,8 +29,8 @@
   <script>
 function clearStorage(){
   localStorage.removeItem('anzahl');
-  localStorage.setItem('anzahl', ergebnisse);
-  document.getElementById("anzahlView").innerText = "Gespeicherte Ergebnisse:" + ergebnisse;
+  localStorage.setItem('anzahl', 0);
+  document.getElementById("anzahlView").innerText = "Gespeicherte Ergebnisse:" + 0;
 }
 
     let deferredPrompt;
