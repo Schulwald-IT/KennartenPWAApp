@@ -1,5 +1,31 @@
 let model_kennartClassifier;
 let model_speciesClassifier;
+
+const speciesImages = {  
+  'Labkraut': 'ResultImages/Labkraut.jpg',  
+  'Ehrenpreis': 'ResultImages/Ehrenpreis.jpg',  
+  'Augentrost': 'ResultImages/Alpen Augentrost.jpg',  
+  'Segge': 'ResultImages/Segge.jpg',  
+  'Hahnenfuß': 'ResultImages/Hahnenfuß.jpg',
+  'Hainsimme': 'ResultImages/Feld Hainsimme.jpg',  
+  'Butterblume': 'ResultImages/Butterblume.jpg',  
+  'Strandflieder': 'ResultImages/Strandflieder.jpg',
+  'Rotklee': 'ResultImages/Rotklee.jpg',  
+  'Schafgabe': 'ResultImages/Schafgabe.jpg',  
+  'Hornklee': 'ResultImages/Hornklee.jpg',  
+  'Wiesenmargerite': 'ResultImages/Wiesenmargerite.jpg',  
+  'Skabiosenflockenblume': 'ResultImages/Skabiosenflockenblume.jpg',  
+  'Platterbse': 'ResultImages/Wiesenplatterbse.jpg',  
+  'Wilde Möhre': 'ResultImages/Wilde Möhre.jpg',
+  'Mädesüß': 'ResultImages/Mädesüß.jpg', 
+  'Flockenblume': 'ResultImages/Flockenblume.jpg', 
+  'Birnelle': 'ResultImages/Birnelle.jpg',
+  'Ranuculus Orthorhynchus': 'ResultImages/Ranuculus Orthorhynchus.jpg',  
+  'Haarstrang': 'ResultImages/Haarstrang.jpg',  
+  'Wiesen Witwenblume': 'ResultImages/Wiesen Witwenblume.jpg',  
+  'Johanniskraut': 'ResultImages/Johanniskraut.jpg',  
+};
+
 let threshold = 50;
 
 //öffnet die kamera in einem video html objekt
@@ -85,24 +111,34 @@ async function predict() {
   ergebnisse = (localStorage.getItem("anzahl")); 
   }
 
-    if (classLabel === 'Kennart' && classConfidence > threshold) {
+    if (classLabel === 'KENNARTEN' && classConfidence > threshold) {
 
     //wenn sicher ist, daß es eine kennart ist mit über 50 % wahrscheinlichkeit dann bestimme die genaue kennart
     const speciesPrediction = await model_speciesClassifier.predict(inputTensor).data();
     //liste der zu bestimmenden kennarten
-    const speciesLabels = ['Labkraut', 'Ehrenpreis', 'Augentrost', 'Segge', 'Hahnfuß', 'Hainsimme', 'Butterblume', 'Strandflieder', 'Rotklee', 'Schafgarbe', 'Hornklee', 'Wiesenmargerite', 'Skabiosenflockenblume', 'Platterbse', 'Möhre', 'Mädesüß', 'Flockenblume', 'Birnelle', 'Ranuculus Orthorhynchus', 'Haarstrang', 'Wiesen Witwenblume', 'Johanniskraut'];
+    const speciesLabels = ['Labkraut', 'Ehrenpreis', 'Augentrost', 'Segge', 'Hahnfuß', 'Hainsimme', 'Butterblume', 'Strandflieder', 'Rotklee', 'Schafgarbe', 'Hornklee', 'Wiesenmargerite', 'Skabiosenflockenblume', 'Platterbse', 'Wilde Möhre', 'Mädesüß', 'Flockenblume', 'Birnelle', 'Ranuculus Orthorhynchus', 'Haarstrang', 'Wiesen Witwenblume', 'Johanniskraut'];
      //holt sich den index des höchsten bestimmten werts
     const speciesIndex = speciesPrediction.indexOf(Math.max(...speciesPrediction));
     //holt sich das label was mit höchster wahrscheinlichkeit bestimmt wurde
     const speciesLabel = speciesLabels[speciesIndex];
+    //zeigt das Bild einer erkannten Planze an
+    const resultImage = document.getElementById('resultImage');
+    if (speciesImages[speciesLabel]) {  
+      resultImage.src = speciesImages[speciesLabel];  resultImage.style.display = 'block';
+    } else {
+        resultImage.style.display = 'none';
+      }
     //berechnet die wahrscheinlichkeit in % mit der die aussage gesichert ist
     const speciesConfidence = (speciesPrediction[speciesIndex] * 100).toFixed(2);
     //gibt in einem paragraph objekt die kennart und die bestimmungsgenauigkeit in % an
     document.getElementById('result').innerText =
       `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%)`;
-    document.getElementById('speciesPrediction').innerText =
-      'Kennarten vorhersage:' + speciesPrediction;
-     ergebnisse = parseInt(ergebnisse) + 1;    
+      document.getElementById('result').style = "color : green";
+      ergebnisse = parseInt(ergebnisse) + 1; 
+  if (classLabel=="NICHT-KENNARTEN") {
+  document.getElementById('result').innerText =
+      `Keine Kennart erkannt : (${classConfidence}%)`;
+      document.getElementById('result').style = "color : red";   
       localStorage.setItem('anzahl', ergebnisse);
       document.getElementById("anzahlView").innerText = "Gespeicherte Ergebnisse:" + ergebnisse;
     }else {
