@@ -1,28 +1,28 @@
 let model_kennartClassifier;
 let model_speciesClassifier;
 const speciesImages = {  
-  'Labkraut': 'images/Labkraut.jpg',  
-  'Ehrenpreis': 'images/Ehrenpreis.jpg',  
-  'Augentrost': 'images/Alpen Augentrost.jpg',  
-  'Segge': 'images/Segge.jpg',  
-  'Hahnenfuß': 'images/Hahnenfuß.jpg',
-  'Hainsimme': 'images/Feld Hainsimme.jpg',  
-  'Butterblume': 'images/Butterblume.jpg',  
-  'Strandflieder': 'images/Strandflieder.jpg',
-  'Rotklee': 'images/Rotklee.jpg',  
-  'Schafgabe': 'images/Schafgabe.jpg',  
-  'Hornklee': 'images/Hornklee.jpg',  
-  'Wiesenmargerite': 'images/Wiesenmargerite.jpg',  
-  'Skabiosenflockenblume': 'images/Skabiosenflockenblume.jpg',  
-  'Platterbse': 'images/Wiesenplatterbse.jpg',  
-  'Wilde Möhre': 'images/Wilde Möhre.jpg',
-  'Mädesüß': 'images/Mädesüß.jpg', 
-  'Flockenblume': 'images/Flockenblume.jpg', 
-  'Birnelle': 'images/Birnelle.jpg',
-  'Ranuculus Orthorhynchus': 'images/Ranuculus Orthorhynchus.jpg',  
-  'Haarstrang': 'images/Haarstrang.jpg',  
-  'Wiesen Witwenblume': 'images/Wiesen Witwenblume.jpg',  
-  'Johanniskraut': 'images/Johanniskraut.jpg',  
+  'Labkraut': 'ResultImages/Labkraut.jpg',  
+  'Ehrenpreis': 'ResultImages/Ehrenpreis.jpg',  
+  'Augentrost': 'ResultImages/Alpen Augentrost.jpg',  
+  'Segge': 'ResultImages/Segge.jpg',  
+  'Hahnenfuß': 'ResultImages/Hahnenfuß.jpg',
+  'Hainsimme': 'ResultImages/Feld Hainsimme.jpg',  
+  'Butterblume': 'ResultImages/Butterblume.jpg',  
+  'Strandflieder': 'ResultImages/Strandflieder.jpg',
+  'Rotklee': 'ResultImages/Rotklee.jpg',  
+  'Schafgabe': 'ResultImages/Schafgabe.jpg',  
+  'Hornklee': 'ResultImages/Hornklee.jpg',  
+  'Wiesenmargerite': 'ResultImages/Wiesenmargerite.jpg',  
+  'Skabiosenflockenblume': 'ResultImages/Skabiosenflockenblume.jpg',  
+  'Platterbse': 'ResultImages/Wiesenplatterbse.jpg',  
+  'Wilde Möhre': 'ResultImages/Wilde Möhre.jpg',
+  'Mädesüß': 'ResultImages/Mädesüß.jpg', 
+  'Flockenblume': 'ResultImages/Flockenblume.jpg', 
+  'Birnelle': 'ResultImages/Birnelle.jpg',
+  'Ranuculus Orthorhynchus': 'ResultImages/Ranuculus Orthorhynchus.jpg',  
+  'Haarstrang': 'ResultImages/Haarstrang.jpg',  
+  'Wiesen Witwenblume': 'ResultImages/Wiesen Witwenblume.jpg',  
+  'Johanniskraut': 'ResultImages/Johanniskraut.jpg',  
 };
 
 //öffnet die kamera in einem video html objekt
@@ -103,7 +103,12 @@ async function predict() {
     //holt sich das label was mit höchster wahrscheinlichkeit bestimmt wurde
     const speciesLabel = speciesLabels[speciesIndex];
     //zeigt das Bild einer erkannten Planze an
-    const plantImage = document.getElementById('resultImage');if (speciesImages[speciesLabel]) {  resultImage.src = speciesImages[speciesLabel]+".jpg";  resultImage.style.display = 'block';} else {  resultImage.style.display = 'none';}
+    const resultImage = document.getElementById('resultImage');
+    if (speciesImages[speciesLabel]) {  
+      resultImage.src = speciesImages[speciesLabel];  resultImage.style.display = 'block';
+    } else {
+        resultImage.style.display = 'none';
+      }
     //berechnet die wahrscheinlichkeit in % mit der die aussage gesichert ist
     const speciesConfidence = (speciesPrediction[speciesIndex] * 100).toFixed(2);
     //gibt in einem paragraph objekt die kennart und die bestimmungsgenauigkeit in % an
