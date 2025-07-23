@@ -69,6 +69,11 @@ async function predict() {
   //bestimmt die wahrscheinlichkeit mit welcher die kennart erkannt wurde
   const classConfidence = (classification[classIndex] * 100).toFixed(2);
 
+  let ergebnisse = 0;
+  if(localStorage.getItem("anzahl")) {
+  ergebnisse = (localStorage.getItem("anzahl")); 
+  }
+
     //if (classLabel === 'Kennart' && classConfidence > 50) {
     //wenn sicher ist, daß es eine kennart ist mit über 50 % wahrscheinlichkeit dann bestimme die genaue kennart
     const speciesPrediction = await model_speciesClassifier.predict(inputTensor).data();
@@ -83,11 +88,19 @@ async function predict() {
     //gibt in einem paragraph objekt die kennart und die bestimmungsgenauigkeit in % an
     document.getElementById('result').innerText =
       `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%) Kennart/Nicht Kennart : (${classConfidence}) (${classLabel})`;
+  ergebnisse = ergebnisse + 1    
+  localStorage.setItem('anzahl', ergebnisse);
+  document.getElementById("anzahlView").innerText = "GespeicherteErgebnisse" + ergebnisse;
   if (classLabel=="NICHT-KENNARTEN") {
   document.getElementById('result').innerText =
       `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%) Kennart/Nicht Kennart : (${classConfidence}) (${classLabel})`;
   }
 }
+//speichert letzte positiver erkennungen
+
+
+  //prüft speicherung des ergebnisses
+   const gespeichertesErgebnis = localStorage.getItem('letztesErgebnis');if (gespeichertesErgebnis) {  document.getElementById('result').innerText = gespeichertesErgebnis + " (geladen)";}
 
 //wenn die webseite innerhalb der app geladen wird, wird folgender code ausgeführt
 document.addEventListener('DOMContentLoaded', () => {

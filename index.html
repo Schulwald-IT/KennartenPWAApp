@@ -17,7 +17,9 @@
   <button id="predictBtn">Erkennen</button>
   <!-- paragraph zum darstellen von status und ergebnis anzeige -->
   <p id="result">Warte auf Modell und Kamera…</p>
-
+  <!-- Anzahl geschpeicherter Ergebnisse anzeigen-->
+  <p id="anzahlView">gespeicherte Ergebnisse</p>
+  <button onclick="localStorage.removeItem('anzahl')">alle gespeicherten Ergebnis zurücksetzen</button>
   <!-- Installationsbutton, standardmäßig versteckt -->
   <button id="installBtn" style="display: none;">App installieren</button>
 
