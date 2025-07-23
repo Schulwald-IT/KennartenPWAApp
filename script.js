@@ -1,5 +1,6 @@
 let model_kennartClassifier;
 let model_speciesClassifier;
+let currentStream = null;
 
 const speciesImages = {  
   'Labkraut': 'ResultImages/Labkraut.jpg',  
@@ -47,7 +48,8 @@ async function setupWebcam() {
     });
 
     //setzt die quelle des videoobjektes auf den stream der kamera
-    webcamElement.srcObject = stream;
+    currentStream = stream;
+    webcamElement.srcObject = currentStream;
 
     //holt sich die metadaten z.b. windowgrösse zum auflösen der kamera in der app
     return new Promise((resolve) => {
@@ -59,12 +61,14 @@ async function setupWebcam() {
   }
 }
 
-const thresholdSlider = document.getElementById('thresholdSlider');
-const thresholdValue = document.getElementById('thresholdValue');
-  
-  thresholdSlider.addEventListener('change', () => {  
-    threshold = parseInt(thresholdSlider.value);  
-    thresholdValue.innerText = threshold;});
+function stopWebcam() {
+  if (currentStream) {
+    currentStream.getTracks().forEach(track => track.stop());
+    currentStream = null;
+    console.log("Kamera gestoppt");
+    document.getElementById('webcam').srcObject = null;
+  }
+}
 
 async function loadModel() {
   document.getElementById('result').innerText = "Modelle werden geladen...";
@@ -84,6 +88,7 @@ async function loadModel() {
 }
 //zentrale Funktion zum bestimmen der Kennart
 async function predict() {
+  console.log("In Predict");
   //holt sich das video objekt mit dem webcam stream
   const video = document.getElementById('webcam');
   //setzt den tensorflow auf das video und setzt die pixelgrösse zur besseren verarbeitung im TF
@@ -97,19 +102,21 @@ async function predict() {
   
   //ergebnisarray
   const classificationLabels = ['KENNARTEN', 'NICHT-KENNARTEN'];
-    
+  console.log("classification", classification);
   const speciesPredictionelement = document.getElementById('speciesPrediction');
   //holt sich den index des höchsten bestimmten werts
   const classIndex = classification.indexOf(Math.max(...classification));
   const classLabel = classificationLabels[classIndex];
   //bestimmt die wahrscheinlichkeit mit welcher die kennart erkannt wurde
-  const classConfidence = (classification[classIndex] * 100).toFixed(2);
+  const classConfidence = (classification[0] * 100).toFixed(2);
   let ergebnisse = 0;
   if(localStorage.getItem("anzahl")) {
   ergebnisse = (localStorage.getItem("anzahl")); 
   }
+  console.log(classConfidence, "Confidence");
+  console.log(threshold, "Value");
 
-    if (classLabel === 'KENNARTEN' && classConfidence > threshold) {
+    if (classConfidence > threshold) {
 
     //wenn sicher ist, daß es eine kennart ist mit über 50 % wahrscheinlichkeit dann bestimme die genaue kennart
     const speciesPrediction = await model_speciesClassifier.predict(inputTensor).data();
@@ -135,13 +142,11 @@ async function predict() {
       ergebnisse = parseInt(ergebnisse) + 1; 
       localStorage.setItem('anzahl', ergebnisse);
       document.getElementById("anzahlView").innerText = "Gespeicherte Ergebnisse:" + ergebnisse;
-  if (classLabel=="NICHT-KENNARTEN") {
+}else {
   document.getElementById('result').innerText =
-      `Keine Kennart erkannt : (${classConfidence}%)`;
-      document.getElementById('result').style = "color : red";   
-    }else {
-      `Kennart nicht erkannt: ${speciesLabel} (${speciesConfidence}%) Kennart/Nicht Kennart : (${classConfidence}) (${classLabel})`;
-  }
+      `Keine Kennart erkannt`;
+      document.getElementById('result').style = "color : red";
+      document.getElementById("resultImage").style.display = 'none';   
 }
 }
 //wenn die webseite innerhalb der app geladen wird, wird folgender code ausgeführt
@@ -150,17 +155,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const startBtn = document.getElementById('startBtn');
   const predictBtn = document.getElementById('predictBtn');
-  predictBtn.disabled = true;
+  console.log("Button connected");
+
+  const thresholdSlider = document.getElementById('thresholdSlider');
+  const thresholdValue = document.getElementById('thresholdValue');
+  
+  thresholdSlider.addEventListener('change', () => {  
+    threshold = parseInt(thresholdSlider.value);  
+    thresholdValue.innerText = threshold;
+  });
 
   //legt das onklick event fest: infotext, öffnen und einrichten der kamera, laden der modelle
   startBtn.addEventListener('click', async () => {
-    startBtn.disabled = true;
+    // Wenn Kamera läuft → stoppen
+    if (currentStream) {
+      stopWebcam();
+      document.getElementById('result').innerText = "Kamera gestoppt.";
+      startBtn.innerText = "Start"; // optional Button-Text ändern
+      return;
+    }
+  
+    // Kamera läuft NICHT → starten
     document.getElementById('result').innerText = "Starte Kamera...";
-
+    startBtn.innerText = "Stop"; // optional Button-Text ändern
     await setupWebcam();
     await loadModel();
-    //legt das onklick event für den predict button fest
-    predictBtn.onclick = predict;
+    predictBtn.addEventListener('click', predict);
+    console.log("Alles prepared");
   });
   
   //wenn service erfolgreich installiert wurde, dann registriere den worker im browser
@@ -169,5 +190,4 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(() => console.log('Service Worker registriert'))
       .catch(err => console.error('Service Worker Fehler:', err));
   }
-
 });

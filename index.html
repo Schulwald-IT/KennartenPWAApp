@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pflanzen-Erkenner</title>
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="style.css" />
   <meta name="theme-color" content="#4CAF50" />
@@ -13,8 +15,8 @@
   <!--video objekt um den kamerastream abzufangen und auszuwerten -->
   <video id="webcam" autoplay playsinline muted width="224" height="224"></video>
   <!-- buttons zum starten der kamera und starten der erkennung -->
-  <button id="startBtn">Kamera starten</button>
-  <button id="predictBtn">Erkennen</button>
+  <button id="startBtn">Start</button>
+  <button id="predictBtn" onclick="predict()">Erkennen</button>
   <!-- paragraph zum darstellen von status und ergebnis anzeige -->
   <p id="result">Warte auf Modell und Kamera…</p>
   <div align="center">
@@ -35,9 +37,6 @@
   <!-- Installationsbutton, standardmäßig versteckt -->
   <button id="installBtn" style="display: none;">App installieren</button>
 
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-  <script src="script.js"></script>
-
   <script>
 function clearStorage(){
   localStorage.removeItem('anzahl');
@@ -46,48 +45,6 @@ function clearStorage(){
 }
 
     let deferredPrompt;
-
-    // Installationsbutton-Logik: vor dem installieren wird folgender code ausgeführt
-    window.addEventListener('beforeinstallprompt', (e) => {
-      // Event wird abgefangen, normale bearbeitung gestoppt, um auf den user prompt zuzugreifen
-      e.preventDefault();
-      deferredPrompt = e;
-      //isStandalone bedeutet, dass die Web-App nicht in einem Browser-Tab läuft, sondern wie eine native App 
-      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-
-      if (!isStandalone) {
-        //holt sich den install button um den button sichtbar zu machen
-        const installBtn = document.getElementById('installBtn');
-        installBtn.style.display = 'block';
-        //fügt einen eventlistener für das onklick event hinzu
-        installBtn.addEventListener('click', async () => {
-        //onklick witd der button unsichtbar gemacht
-        installBtn.style.display = 'none';
-        //zeigt dem Benutzer das Installations-Dialogfenster für die Progressive Web App an
-        deferredPrompt.prompt();
-        //speichert die Auswahl des Nutzers (accepted) 
-        const { outcome } = await deferredPrompt.userChoice;
-        //je nach der Auswahl des Nutzers gibt es eine Message an den Nutzer
-        if (outcome === 'accepted') {
-            console.log('App-Installation akzeptiert');
-          } else {
-            console.log('App-Installation abgelehnt');
-          }
-        //der prompt muss wieder zurückgesetzt werden
-        deferredPrompt = null;
-        });
-      }
-    });
-
-    //onklick events von start button wird gesetzt
-    document.getElementById('startBtn').onclick = async () => {
-    //webcam wird geöffnet und models werden gelesen zur bestimmung der kennarten
-    await setupWebcam();
-    await loadModel();
-    //predictbutton onklick event wird gesetzt
-    document.getElementById('predictBtn').onclick = predict;
-    };
-
 
     // Optional: Nach Installation Button ausblenden
     window.addEventListener('appinstalled', () => {
