@@ -113,10 +113,12 @@ async function predict() {
     const speciesConfidence = (speciesPrediction[speciesIndex] * 100).toFixed(2);
     //gibt in einem paragraph objekt die kennart und die bestimmungsgenauigkeit in % an
     document.getElementById('result').innerText =
-      `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%) Kennart/Nicht Kennart : (${classConfidence}) (${classLabel})`;
+      `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%)`;
+      document.getElementById('result').style = "color : green";
   if (classLabel=="NICHT-KENNARTEN") {
   document.getElementById('result').innerText =
-      `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%) Kennart/Nicht Kennart : (${classConfidence}) (${classLabel})`;
+      `Keine Kennart erkannt : (${classConfidence}%)`;
+      document.getElementById('result').style = "color : red";
   }
 }
 
