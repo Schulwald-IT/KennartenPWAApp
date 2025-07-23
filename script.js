@@ -99,8 +99,6 @@ async function predict() {
   const classificationLabels = ['KENNARTEN', 'NICHT-KENNARTEN'];
     
   const speciesPredictionelement = document.getElementById('speciesPrediction');
-  speciesPredictionelement.innerText =
-    'Kennarten/Keine Kennarten vorhersage:' + classification;
   //holt sich den index des höchsten bestimmten werts
   const classIndex = classification.indexOf(Math.max(...classification));
   const classLabel = classificationLabels[classIndex];
@@ -135,15 +133,16 @@ async function predict() {
       `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%)`;
       document.getElementById('result').style = "color : green";
       ergebnisse = parseInt(ergebnisse) + 1; 
+      localStorage.setItem('anzahl', ergebnisse);
+      document.getElementById("anzahlView").innerText = "Gespeicherte Ergebnisse:" + ergebnisse;
   if (classLabel=="NICHT-KENNARTEN") {
   document.getElementById('result').innerText =
       `Keine Kennart erkannt : (${classConfidence}%)`;
       document.getElementById('result').style = "color : red";   
-      localStorage.setItem('anzahl', ergebnisse);
-      document.getElementById("anzahlView").innerText = "Gespeicherte Ergebnisse:" + ergebnisse;
     }else {
       `Kennart nicht erkannt: ${speciesLabel} (${speciesConfidence}%) Kennart/Nicht Kennart : (${classConfidence}) (${classLabel})`;
   }
+}
 }
 //wenn die webseite innerhalb der app geladen wird, wird folgender code ausgeführt
 document.addEventListener('DOMContentLoaded', () => {
@@ -170,4 +169,5 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(() => console.log('Service Worker registriert'))
       .catch(err => console.error('Service Worker Fehler:', err));
   }
-})
+
+});
