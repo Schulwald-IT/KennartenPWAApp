@@ -6,6 +6,7 @@ const urlsToCache = [
   '/script.js',
   '/style.css',
   '/manifest.json',
+  '/ResultImages/',
   //model classifier wird benötigt um zu entscheiden ob es eine kennart ist oder nicht
   '/modelClassifier/model.json',
   '/modelClassifier/model.json',

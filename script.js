@@ -103,7 +103,7 @@ async function predict() {
     //holt sich das label was mit höchster wahrscheinlichkeit bestimmt wurde
     const speciesLabel = speciesLabels[speciesIndex];
     //zeigt das Bild einer erkannten Planze an
-    const plantImage = document.getElementById('resultImage');if (speciesImages[speciesLabel]) {  resultImage.src = speciesImages[speciesLabel];  resultImage.style.display = 'block';} else {  resultImage.style.display = 'none';}
+    const plantImage = document.getElementById('resultImage');if (speciesImages[speciesLabel]) {  resultImage.src = speciesImages[speciesLabel]+".jpg";  resultImage.style.display = 'block';} else {  resultImage.style.display = 'none';}
     //berechnet die wahrscheinlichkeit in % mit der die aussage gesichert ist
     const speciesConfidence = (speciesPrediction[speciesIndex] * 100).toFixed(2);
     //gibt in einem paragraph objekt die kennart und die bestimmungsgenauigkeit in % an
