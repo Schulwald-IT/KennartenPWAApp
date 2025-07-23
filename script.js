@@ -96,12 +96,6 @@ async function predict() {
       `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%) Kennart/Nicht Kennart : (${classConfidence}) (${classLabel})`;
   }
 }
-//speichert letzte positiver erkennungen
-
-
-  //prüft speicherung des ergebnisses
-   const gespeichertesErgebnis = localStorage.getItem('letztesErgebnis');if (gespeichertesErgebnis) {  document.getElementById('result').innerText = gespeichertesErgebnis + " (geladen)";}
-
 //wenn die webseite innerhalb der app geladen wird, wird folgender code ausgeführt
 document.addEventListener('DOMContentLoaded', () => {
   //holt sich vom dokument die html elemente startbutton und predict button
