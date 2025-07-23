@@ -1,5 +1,6 @@
 let model_kennartClassifier;
 let model_speciesClassifier;
+let threshold = 50;
 
 //öffnet die kamera in einem video html objekt
 async function setupWebcam() {
@@ -32,6 +33,12 @@ async function setupWebcam() {
   }
 }
 
+const thresholdSlider = document.getElementById('thresholdSlider');
+const thresholdValue = document.getElementById('thresholdValue');
+  
+  thresholdSlider.addEventListener('change', () => {  
+    threshold = parseInt(thresholdSlider.value);  
+    thresholdValue.innerText = threshold;});
 
 async function loadModel() {
   document.getElementById('result').innerText = "Modelle werden geladen...";
@@ -61,15 +68,21 @@ async function predict() {
 
   //gibt einen array von wahrscheinlichkeiten (kennart oder nicht) zurück
   const classification = await model_kennartClassifier.predict(inputTensor).data();
+  
   //ergebnisarray
   const classificationLabels = ['KENNARTEN', 'NICHT-KENNARTEN'];
+    
+  const speciesPredictionelement = document.getElementById('speciesPrediction');
+  speciesPredictionelement.innerText =
+    'Kennarten vorheersage:' + classification;
   //holt sich den index des höchsten bestimmten werts
   const classIndex = classification.indexOf(Math.max(...classification));
   const classLabel = classificationLabels[classIndex];
   //bestimmt die wahrscheinlichkeit mit welcher die kennart erkannt wurde
   const classConfidence = (classification[classIndex] * 100).toFixed(2);
 
-    //if (classLabel === 'Kennart' && classConfidence > 50) {
+    if (classLabel === 'Kennart' && classConfidence > threshold) {
+    alert('wird geprüft welche Art es ist')
     //wenn sicher ist, daß es eine kennart ist mit über 50 % wahrscheinlichkeit dann bestimme die genaue kennart
     const speciesPrediction = await model_speciesClassifier.predict(inputTensor).data();
     //liste der zu bestimmenden kennarten
@@ -82,8 +95,10 @@ async function predict() {
     const speciesConfidence = (speciesPrediction[speciesIndex] * 100).toFixed(2);
     //gibt in einem paragraph objekt die kennart und die bestimmungsgenauigkeit in % an
     document.getElementById('result').innerText =
-      `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%) Kennart/Nicht Kennart : (${classConfidence}) (${classLabel})`;
-  if (classLabel=="NICHT-KENNARTEN") {
+      `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%)`;
+    document.getElementById('speciesPrediction').innerText =
+      'Kennarten vorheersage:' + speciesPrediction;
+    }else {
   document.getElementById('result').innerText =
       `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%) Kennart/Nicht Kennart : (${classConfidence}) (${classLabel})`;
   }
@@ -92,6 +107,7 @@ async function predict() {
 //wenn die webseite innerhalb der app geladen wird, wird folgender code ausgeführt
 document.addEventListener('DOMContentLoaded', () => {
   //holt sich vom dokument die html elemente startbutton und predict button
+
   const startBtn = document.getElementById('startBtn');
   const predictBtn = document.getElementById('predictBtn');
   predictBtn.disabled = true;
@@ -113,4 +129,4 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(() => console.log('Service Worker registriert'))
       .catch(err => console.error('Service Worker Fehler:', err));
   }
-});
+})
