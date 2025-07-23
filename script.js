@@ -74,15 +74,19 @@ async function predict() {
     
   const speciesPredictionelement = document.getElementById('speciesPrediction');
   speciesPredictionelement.innerText =
-    'Kennarten vorheersage:' + classification;
+    'Kennarten/Keine Kennarten vorhersage:' + classification;
   //holt sich den index des höchsten bestimmten werts
   const classIndex = classification.indexOf(Math.max(...classification));
   const classLabel = classificationLabels[classIndex];
   //bestimmt die wahrscheinlichkeit mit welcher die kennart erkannt wurde
   const classConfidence = (classification[classIndex] * 100).toFixed(2);
+  let ergebnisse = 0;
+  if(localStorage.getItem("anzahl")) {
+  ergebnisse = (localStorage.getItem("anzahl")); 
+  }
 
     if (classLabel === 'Kennart' && classConfidence > threshold) {
-    alert('wird geprüft welche Art es ist')
+
     //wenn sicher ist, daß es eine kennart ist mit über 50 % wahrscheinlichkeit dann bestimme die genaue kennart
     const speciesPrediction = await model_speciesClassifier.predict(inputTensor).data();
     //liste der zu bestimmenden kennarten
@@ -97,13 +101,14 @@ async function predict() {
     document.getElementById('result').innerText =
       `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%)`;
     document.getElementById('speciesPrediction').innerText =
-      'Kennarten vorheersage:' + speciesPrediction;
+      'Kennarten vorhersage:' + speciesPrediction;
+     ergebnisse = parseInt(ergebnisse) + 1;    
+      localStorage.setItem('anzahl', ergebnisse);
+      document.getElementById("anzahlView").innerText = "Gespeicherte Ergebnisse:" + ergebnisse;
     }else {
-  document.getElementById('result').innerText =
-      `Kennart erkannt: ${speciesLabel} (${speciesConfidence}%) Kennart/Nicht Kennart : (${classConfidence}) (${classLabel})`;
+      `Kennart nicht erkannt: ${speciesLabel} (${speciesConfidence}%) Kennart/Nicht Kennart : (${classConfidence}) (${classLabel})`;
   }
 }
-
 //wenn die webseite innerhalb der app geladen wird, wird folgender code ausgeführt
 document.addEventListener('DOMContentLoaded', () => {
   //holt sich vom dokument die html elemente startbutton und predict button
