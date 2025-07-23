@@ -4,53 +4,53 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pflanzen-Erkenner</title>
-  <script src="script.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <script src="script.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js" defer></script>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="style.css" />
   <meta name="theme-color" content="#4CAF50" />
 </head>
 <body>
-  <h1>Pflanzen-Erkenner</h1>
-  <!--video objekt um den kamerastream abzufangen und auszuwerten -->
-  <video id="webcam" autoplay playsinline muted width="224" height="224"></video>
-  <!-- buttons zum starten der kamera und starten der erkennung -->
-  <button id="startBtn">Start</button>
-  <button id="predictBtn" onclick="predict()">Erkennen</button>
-  <!-- paragraph zum darstellen von status und ergebnis anzeige -->
-  <p id="result">Warte auf Modell und Kamera…</p>
-  <div align="center">
-  <img id="resultImage"    src=""    alt="Pflanzenbild" >
+  <div class="app-container">
+    <h1>Pflanzen-Erkenner</h1>
+
+    <div class="card">
+      <video id="webcam" autoplay playsinline muted width="224" height="224"></video>
+
+      <div class="button-group">
+        <button id="startBtn">Start</button>
+        <button id="predictBtn" disabled>Erkennen</button>
+      </div>
+
+      <p id="result">Warte auf Modell und Kamera…</p>
+      <img id="resultImage" src="" alt="Pflanzenbild" />
+      <p id="speciesPrediction"></p>
+
+      <label for="thresholdSlider">
+        Schwellwert: <span id="thresholdValue">50</span>%
+      </label>
+      <input type="range" id="thresholdSlider" min="0" max="100" value="50" step="1" />
+    </div>
+
+    <div class="card">
+      <p id="anzahlView">Gespeicherte Ergebnisse</p>
+      <button onclick="clearStorage()">Alle Ergebnisse zurücksetzen</button>
+    </div>
+
+    <button id="installBtn" style="display: none;">App installieren</button>
   </div>
 
-  <!-- paragraph zum darstellen des species prediction arrays -->
-  <p id="speciesPrediction"></p>
-
-  <label for="thresholdSlider">Schwellwert: <span id='thresholdValue'>50</span>%</span></label>
-  <input type="range" id="thresholdSlider" min="0" max="100" value="50" step="1"/>
-
-
-  <!-- Anzahl geschpeicherter Ergebnisse anzeigen-->
-  <p id="anzahlView">gespeicherte Ergebnisse</p>
-  <button onclick="clearStorage()">alle gespeicherten Ergebnis zurücksetzen</button>
-
-  <!-- Installationsbutton, standardmäßig versteckt -->
-  <button id="installBtn" style="display: none;">App installieren</button>
-
   <script>
-function clearStorage(){
-  localStorage.removeItem('anzahl');
-  localStorage.setItem('anzahl', 0);
-  document.getElementById("anzahlView").innerText = "Gespeicherte Ergebnisse:" + 0;
-}
+    function clearStorage() {
+      localStorage.removeItem('anzahl');
+      localStorage.setItem('anzahl', 0);
+      document.getElementById("anzahlView").innerText = "Gespeicherte Ergebnisse: 0";
+    }
 
     let deferredPrompt;
-
-    // Optional: Nach Installation Button ausblenden
     window.addEventListener('appinstalled', () => {
       console.log('PWA installiert');
-      const installBtn = document.getElementById('installBtn');
-      installBtn.style.display = 'none';
+      document.getElementById('installBtn').style.display = 'none';
     });
   </script>
 </body>
