@@ -1,5 +1,29 @@
 let model_kennartClassifier;
 let model_speciesClassifier;
+const speciesImages = {  
+  'Labkraut': 'images/Labkraut.jpg',  
+  'Ehrenpreis': 'images/Ehrenpreis.jpg',  
+  'Augentrost': 'images/Alpen Augentrost.jpg',  
+  'Segge': 'images/Segge.jpg',  
+  'Hahnenfuß': 'images/Hahnenfuß.jpg',
+  'Hainsimme': 'images/Feld Hainsimme.jpg',  
+  'Butterblume': 'images/Butterblume.jpg',  
+  'Strandflieder': 'images/Strandflieder.jpg',
+  'Rotklee': 'images/Rotklee.jpg',  
+  'Schafgabe': 'images/Schafgabe.jpg',  
+  'Hornklee': 'images/Hornklee.jpg',  
+  'Wiesenmargerite': 'images/Wiesenmargerite.jpg',  
+  'Skabiosenflockenblume': 'images/Skabiosenflockenblume.jpg',  
+  'Platterbse': 'images/Wiesenplatterbse.jpg',  
+  'Wilde Möhre': 'images/Wilde Möhre.jpg',
+  'Mädesüß': 'images/Mädesüß.jpg', 
+  'Flockenblume': 'images/Flockenblume.jpg', 
+  'Birnelle': 'images/Birnelle.jpg',
+  'Ranuculus Orthorhynchus': 'images/Ranuculus Orthorhynchus.jpg',  
+  'Haarstrang': 'images/Haarstrang.jpg',  
+  'Wiesen Witwenblume': 'images/Wiesen Witwenblume.jpg',  
+  'Johanniskraut': 'images/Johanniskraut.jpg',  
+};
 
 //öffnet die kamera in einem video html objekt
 async function setupWebcam() {
@@ -73,11 +97,13 @@ async function predict() {
     //wenn sicher ist, daß es eine kennart ist mit über 50 % wahrscheinlichkeit dann bestimme die genaue kennart
     const speciesPrediction = await model_speciesClassifier.predict(inputTensor).data();
     //liste der zu bestimmenden kennarten
-    const speciesLabels = ['Labkraut', 'Ehrenpreis', 'Augentrost', 'Segge', 'Hahnfuß', 'Hainsimme', 'Butterblume', 'Strandflieder', 'Rotklee', 'Schafgarbe', 'Hornklee', 'Wiesenmargerite', 'Skabiosenflockenblume', 'Platterbse', 'Möhre', 'Mädesüß', 'Flockenblume', 'Birnelle', 'Ranuculus Orthorhynchus', 'Haarstrang', 'Wiesen Witwenblume', 'Johanniskraut'];
+    const speciesLabels = ['Labkraut', 'Ehrenpreis', 'Augentrost', 'Segge', 'Hahnfuß', 'Hainsimme', 'Butterblume', 'Strandflieder', 'Rotklee', 'Schafgarbe', 'Hornklee', 'Wiesenmargerite', 'Skabiosenflockenblume', 'Platterbse', 'Wilde Möhre', 'Mädesüß', 'Flockenblume', 'Birnelle', 'Ranuculus Orthorhynchus', 'Haarstrang', 'Wiesen Witwenblume', 'Johanniskraut'];
      //holt sich den index des höchsten bestimmten werts
     const speciesIndex = speciesPrediction.indexOf(Math.max(...speciesPrediction));
     //holt sich das label was mit höchster wahrscheinlichkeit bestimmt wurde
     const speciesLabel = speciesLabels[speciesIndex];
+    //zeigt das Bild einer erkannten Planze an
+    const plantImage = document.getElementById('resultImage');if (speciesImages[speciesLabel]) {  resultImage.src = speciesImages[speciesLabel];  resultImage.style.display = 'block';} else {  resultImage.style.display = 'none';}
     //berechnet die wahrscheinlichkeit in % mit der die aussage gesichert ist
     const speciesConfidence = (speciesPrediction[speciesIndex] * 100).toFixed(2);
     //gibt in einem paragraph objekt die kennart und die bestimmungsgenauigkeit in % an
